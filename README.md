@@ -23,7 +23,7 @@
 
 - **OpenAI 开源系列**：GPT-OSS-120b、GPT-OSS-20b
 - **DeepSeek 系列**：DeepSeek-R1、DeepSeek-V3、DeepSeek-V3.1（128k上下文）
-- **Claude 系列**：Claude 3.5 Sonnet、Claude 3.7 Sonnet、Claude 4.0 Sonnet、Claude 4.0 Opus、Claude 4.1 Opus（200k上下文）
+- **Claude 系列**：Claude 3.5 Sonnet、Claude 3.7 Sonnet、Claude 4.0 Sonnet、Claude 4.5 Sonnet、Claude 4.0 Opus、Claude 4.1 Opus（200k上下文）
 - **GLM 系列**：GLM-4.5、GLM-4.5-Air
 - **Kimi 系列**：Kimi-K2
 - **Qwen 系列**：Qwen-Turbo、Qwen3-32B、Qwen3-235B-A22B（128k上下文）、Qwen3-Max-Preview（256k上下文）
@@ -172,8 +172,7 @@ pip install -r requirements.txt
 
    ```bash
    INSTALL_METHOD=remote
-   REMOTE_INSTALL_PORT=5003
-   REMOTE_INSTALL_KEY=your-debug-key-here
+   REMOTE_INSTALL_URL=debug.dify.ai:5003
    REMOTE_INSTALL_HOST=debug-plugin.dify.dev
    ```
 
