@@ -1,3 +1,6 @@
+- claude-4.5-opus
+- claude-4.5-sonnet
+- claude-4.0-sonnet
 - gemini-3.0-flash-preview
 - gpt-oss-20b
 - gpt-oss-120b
@@ -22,10 +25,7 @@
 - claude-3.5-haiku
 - claude-3.7-sonnet
 - claude-4.0-opus
-- claude-4.5-opus
 - claude-4.5-haiku
-- claude-4.5-sonnet
-- claude-4.0-sonnet
 - claude-4.1-opus
 - glm-4.5
 - glm-4.5-air
