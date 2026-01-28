@@ -1,7 +1,7 @@
-model: mimo-v2-flash
+model: xiaomi/mimo-v2-flash
 label:
-  zh_Hans: Mimo-V2-Flash
-  en_US: Mimo-V2-Flash
+  zh_Hans: Xiaomi/Mimo-V2-Flash
+  en_US: Xiaomi/Mimo-V2-Flash
 model_type: llm
 features:
 - tool-call
