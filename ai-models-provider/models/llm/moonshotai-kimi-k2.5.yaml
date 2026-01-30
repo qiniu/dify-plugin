@@ -1,7 +1,7 @@
-model: z-ai/autoglm-phone-9b
+model: moonshotai/kimi-k2.5
 label:
-  zh_Hans: Z-Ai/Autoglm Phone 9b
-  en_US: Z-Ai/Autoglm Phone 9b
+  zh_Hans: Moonshotai/Kimi-K2.5
+  en_US: Moonshotai/Kimi-K2.5
 model_type: llm
 features:
 - tool-call
@@ -9,7 +9,7 @@ features:
 - vision
 model_properties:
   mode: chat
-  context_size: 12800
+  context_size: 256000
 parameter_rules:
 - name: temperature
   use_template: temperature
