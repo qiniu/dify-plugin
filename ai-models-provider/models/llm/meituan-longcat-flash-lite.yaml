@@ -1,0 +1,18 @@
+model: meituan/longcat-flash-lite
+label:
+  zh_Hans: Meituan/Longcat-Flash-Lite
+  en_US: Meituan/Longcat-Flash-Lite
+model_type: llm
+features:
+- tool-call
+- stream-tool-call
+model_properties:
+  mode: chat
+  context_size: 256000
+parameter_rules:
+- name: temperature
+  use_template: temperature
+- name: top_p
+  use_template: top_p
+- name: max_tokens
+  use_template: max_tokens
