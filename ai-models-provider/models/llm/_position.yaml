@@ -1,3 +1,5 @@
+- claude-4.6-sonnet
+- qwen3.5-397b-a17b
 - gemini-3.1-pro-preview
 - gemini-3.0-pro-preview
 - gemini-2.0-flash-lite
@@ -7,7 +9,6 @@
 - gemini-3.0-flash-preview
 - gemini-3.0-pro-image-preview
 - gemini-2.5-pro
-- claude-4.6-sonnet
 - minimax-minimax-m2.5
 - claude-4.5-sonnet
 - doubao-seed-2.0-lite
