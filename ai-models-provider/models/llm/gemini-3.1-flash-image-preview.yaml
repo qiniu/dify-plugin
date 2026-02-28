@@ -1,7 +1,7 @@
-model: claude-3.5-haiku
+model: gemini-3.1-flash-image-preview
 label:
-  zh_Hans: Claude 3.5 Haiku
-  en_US: Claude 3.5 Haiku
+  zh_Hans: Gemini 3.1 Flash Image Preview
+  en_US: Gemini 3.1 Flash Image Preview
 model_type: llm
 features:
 - tool-call
@@ -9,7 +9,7 @@ features:
 - vision
 model_properties:
   mode: chat
-  context_size: 200000
+  context_size: 64000
 parameter_rules:
 - name: temperature
   use_template: temperature
