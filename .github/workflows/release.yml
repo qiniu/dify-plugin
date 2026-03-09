@@ -3,10 +3,18 @@ name: Build and Release Plugin
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release tag name (e.g., ai-models-provider-v0.2.0)'
+        required: true
+        type: string
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    outputs:
+      tag_name: ${{ steps.parse_tag.outputs.tag_name }}
     
     steps:
     - name: Checkout code
@@ -15,7 +23,17 @@ jobs:
     - name: Parse plugin info from release tag
       id: parse_tag
       run: |
-        TAG_NAME="${{ github.event.release.tag_name }}"
+        if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+          TAG_NAME="${{ inputs.tag_name }}"
+        else
+          TAG_NAME="${{ github.event.release.tag_name }}"
+        fi
+
+        if [ -z "$TAG_NAME" ]; then
+          echo "Error: tag_name is empty"
+          exit 1
+        fi
+
         echo "Processing release tag: $TAG_NAME"
         
         # 解析插件名称和版本 (格式: plugin-name-vX.Y.Z 或 plugin-name-vX.Y.Z-beta.N)
@@ -29,6 +47,7 @@ jobs:
         
         echo "plugin_name=$PLUGIN_NAME" >> $GITHUB_OUTPUT
         echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "tag_name=$TAG_NAME" >> $GITHUB_OUTPUT
         
         # 验证插件名称
         if [ "$PLUGIN_NAME" != "ai-models-provider" ] && [ "$PLUGIN_NAME" != "storage-tools" ]; then
@@ -84,17 +103,32 @@ jobs:
         PACKAGE_NAME="${{ steps.parse_tag.outputs.plugin_name }}-${{ steps.parse_tag.outputs.version }}.difypkg"
         echo "Building package: $PACKAGE_NAME"
         /tmp/dify-cli/dify-plugin-linux-amd64 plugin package -o "$PACKAGE_NAME" /tmp/plugin-build
+
+    - name: Ensure release exists
+      env:
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        TAG_NAME="${{ steps.parse_tag.outputs.tag_name }}"
+        if gh release view "$TAG_NAME" --repo "${{ github.repository }}" >/dev/null 2>&1; then
+          echo "Release exists: $TAG_NAME"
+        else
+          echo "Release not found, creating: $TAG_NAME"
+          gh release create "$TAG_NAME" \
+            --repo "${{ github.repository }}" \
+            --title "${{ steps.parse_tag.outputs.plugin_name }} v${{ steps.parse_tag.outputs.version }}" \
+            --notes "Auto-created by release workflow."
+        fi
         
     - name: Upload package to release
       env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
         PACKAGE_NAME="${{ steps.parse_tag.outputs.plugin_name }}-${{ steps.parse_tag.outputs.version }}.difypkg"
-        gh release upload ${{ github.event.release.tag_name }} "$PACKAGE_NAME" --clobber
+        gh release upload ${{ steps.parse_tag.outputs.tag_name }} "$PACKAGE_NAME" --clobber
 
   publish:
     needs: build
     uses: ./.github/workflows/publish.yml
     with:
-      tag_name: ${{ github.event.release.tag_name }}
+      tag_name: ${{ needs.build.outputs.tag_name }}
     secrets: inherit

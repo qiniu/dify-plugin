@@ -61,10 +61,11 @@ CI 环境行为：
 
 import sys
 import os
+import argparse
 import yaml
 import requests
 from pathlib import Path
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
 
 # 七牛云市场 API 端点
 MARKET_API_URL = "https://openai.sufy.com/v1/market/models?overseas=true"
@@ -72,9 +73,12 @@ MARKET_API_URL = "https://openai.sufy.com/v1/market/models?overseas=true"
 # 模型配置目录
 SCRIPT_DIR = Path(__file__).parent
 PROJECT_ROOT = SCRIPT_DIR.parent
-MODELS_DIR = PROJECT_ROOT / "ai-models-provider" / "models" / "llm"
+AI_MODELS_DIR = PROJECT_ROOT / "ai-models-provider"
+MODELS_DIR = AI_MODELS_DIR / "models" / "llm"
+MANIFEST_FILE = AI_MODELS_DIR / "manifest.yaml"
 POSITION_FILENAME = "_position.yaml"
 POSITION_FILE = MODELS_DIR / POSITION_FILENAME
+AI_MODELS_PLUGIN_NAME = "ai-models-provider"
 VISION_MODALITIES = {"image"}
 DEFAULT_CONTEXT_LENGTH = 65_536
 DEFAULT_FEATURES = ["tool-call", "stream-tool-call"]
@@ -105,6 +109,47 @@ models_with_missing_fields = []
 def has_vision_capability(input_modalities: List[str]) -> bool:
     """Return True when the model supports any non-text modality we treat as vision."""
     return any(modality in VISION_MODALITIES for modality in (input_modalities or []))
+
+
+def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+    """解析命令行参数。"""
+    parser = argparse.ArgumentParser(description="七牛云 AI 模型列表自动更新脚本")
+    parser.add_argument(
+        "--release-meta",
+        action="store_true",
+        help="输出发布元数据（version 和 tag_name），用于 CI 工作流。",
+    )
+    parser.add_argument(
+        "--plugin-name",
+        default=AI_MODELS_PLUGIN_NAME,
+        help=f"生成 release tag 时使用的插件名，默认: {AI_MODELS_PLUGIN_NAME}",
+    )
+    return parser.parse_args(argv)
+
+
+def get_manifest_version() -> str:
+    """读取 manifest.yaml 中的插件版本。"""
+    with open(MANIFEST_FILE, "r", encoding="utf-8") as f:
+        manifest = yaml.safe_load(f) or {}
+
+    version = str(manifest.get("version", "")).strip()
+    if not version:
+        raise ValueError(f"manifest.yaml 中缺少有效的 version 字段: {MANIFEST_FILE}")
+
+    return version
+
+
+def build_release_tag(version: str, plugin_name: str = AI_MODELS_PLUGIN_NAME) -> str:
+    """根据插件名和版本号构建 release tag。"""
+    return f"{plugin_name}-v{version}"
+
+
+def output_release_meta(plugin_name: str = AI_MODELS_PLUGIN_NAME) -> None:
+    """输出发布元数据，供 GitHub Actions 写入 GITHUB_OUTPUT。"""
+    version = get_manifest_version()
+    tag_name = build_release_tag(version, plugin_name)
+    print(f"version={version}")
+    print(f"tag_name={tag_name}")
 
 
 def is_llm_model(model_info: ModelInfo) -> bool:
@@ -426,8 +471,14 @@ def exit_with_change_status(added: List[str], updated: List[str], removed: List[
     sys.exit(1)
 
 
-def main():
+def main(argv: Optional[List[str]] = None):
     """主函数"""
+    args = parse_args(argv)
+
+    if args.release_meta:
+        output_release_meta(args.plugin_name)
+        return
+
     print("=" * 70)
     print("七牛云 AI 模型列表自动更新脚本")
     print(f"数据源: {MARKET_API_URL}")
