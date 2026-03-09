@@ -39,4 +39,4 @@ resource:
     tool:
       enabled: false
 type: plugin
-version: 0.2.5 # 插件实际版本号，发布时更新此版本
+version: 0.2.6 # 插件实际版本号，发布时更新此版本

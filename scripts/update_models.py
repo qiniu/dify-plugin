@@ -62,6 +62,7 @@ CI 环境行为：
 import sys
 import os
 import argparse
+import re
 import yaml
 import requests
 from pathlib import Path
@@ -150,6 +151,34 @@ def output_release_meta(plugin_name: str = AI_MODELS_PLUGIN_NAME) -> None:
     tag_name = build_release_tag(version, plugin_name)
     print(f"version={version}")
     print(f"tag_name={tag_name}")
+
+
+def bump_patch_version() -> str:
+    """自动增加 manifest.yaml 的 patch 版本号（x.y.z -> x.y.(z+1)）。"""
+    with open(MANIFEST_FILE, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    matched = re.search(r"^version:\s*[\"']?([0-9]+\.[0-9]+\.[0-9]+)[\"']?\s*$", content, flags=re.MULTILINE)
+    if not matched:
+        raise ValueError(f"无法从 {MANIFEST_FILE} 解析插件 version")
+
+    current_version = matched.group(1)
+    major, minor, patch = current_version.split(".")
+    new_version = f"{major}.{minor}.{int(patch) + 1}"
+
+    updated_content = re.sub(
+        r"^version:\s*[\"']?" + re.escape(current_version) + r"[\"']?\s*$",
+        f"version: {new_version}",
+        content,
+        count=1,
+        flags=re.MULTILINE,
+    )
+
+    with open(MANIFEST_FILE, "w", encoding="utf-8") as f:
+        f.write(updated_content)
+
+    print(f"✓ 已更新插件版本: {current_version} -> {new_version}")
+    return new_version
 
 
 def is_llm_model(model_info: ModelInfo) -> bool:
@@ -446,6 +475,11 @@ def summarize_changes(added: List[str], updated: List[str], removed: List[str], 
     print(f"  删除模型: {len(removed)} 个")
     print(f"  总计模型: {total} 个")
     print("=" * 70)
+
+    if added or updated or removed:
+        print()
+        print("检测到模型变更，自动递增插件版本号...")
+        bump_patch_version()
 
 
 def enforce_ci_requirements() -> None:
