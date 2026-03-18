@@ -1,14 +1,14 @@
-model: glm-4.5-air
+model: nvidia/nemotron-3-super-120b-a12b
 label:
-  zh_Hans: GLM 4.5 Air
-  en_US: GLM 4.5 Air
+  zh_Hans: Nvidia/Nemotron-3 Super 120b A12b
+  en_US: Nvidia/Nemotron-3 Super 120b A12b
 model_type: llm
 features:
 - tool-call
 - stream-tool-call
 model_properties:
   mode: chat
-  context_size: 131000
+  context_size: 262144
 parameter_rules:
 - name: temperature
   use_template: temperature
