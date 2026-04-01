@@ -7,7 +7,6 @@
 - qwen2.5-vl-72b-instruct
 - claude-4.0-opus
 - deepseek-v3-0324
-- gemini-3.0-pro-preview
 - qwen3-30b-a3b
 - qwen-max-2025-01-25
 - doubao-1.5-pro-32k
@@ -47,6 +46,7 @@
 - claude-4.5-haiku
 - minimax-minimax-m2
 - moonshotai-kimi-k2-thinking
+- gemini-3.0-pro-preview
 - x-ai-grok-4.1-fast
 - gemini-3.0-pro-image-preview
 - claude-4.5-opus
