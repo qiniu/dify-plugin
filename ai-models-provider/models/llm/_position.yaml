@@ -2,6 +2,11 @@
 - claude-4.5-haiku
 - claude-4.6-sonnet
 - claude-4.6-opus
+- claude-4.0-opus
+- claude-4.5-opus
+- claude-4.5-sonnet
+- claude-4.0-sonnet
+- claude-4.1-opus
 - qwen-qwen3.6-plus
 - qwen-qwen3.6-plus-free
 - qwen-qwen3.5-plus
@@ -35,8 +40,6 @@
 - minimax-minimax-m2.7
 - openai-gpt-5.4-nano
 - MiniMax-M1
-- claude-4.0-opus
-- claude-4.0-sonnet
 - deepseek-r1-0528
 - deepseek-r1
 - deepseek-v3-0324
@@ -55,7 +58,6 @@
 - qwen3-235b-a22b
 - qwen3-30b-a3b
 - qwen3-32b
-- claude-4.1-opus
 - gpt-oss-120b
 - gpt-oss-20b
 - qwen3-235b-a22b-instruct-2507
@@ -77,12 +79,10 @@
 - qwen3-max
 - deepseek-deepseek-v3.2-exp
 - deepseek-deepseek-v3.2-exp-thinking
-- claude-4.5-sonnet
 - z-ai-glm-4.6
 - minimax-minimax-m2
 - moonshotai-kimi-k2-thinking
 - x-ai-grok-4.1-fast
-- claude-4.5-opus
 - deepseek-deepseek-v3.2-251201
 - openai-gpt-5.2
 - x-ai-grok-4-fast-non-reasoning
