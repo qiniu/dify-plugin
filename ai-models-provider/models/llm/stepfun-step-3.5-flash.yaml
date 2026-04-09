@@ -1,7 +1,7 @@
 model: stepfun/step-3.5-flash
 label:
-  zh_Hans: Stepfun/Step-3.5 Flash
-  en_US: Stepfun/Step-3.5 Flash
+  zh_Hans: Step-3.5 Flash（free）
+  en_US: Step-3.5 Flash（free）
 model_type: llm
 features:
 - tool-call
