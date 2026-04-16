@@ -1,3 +1,5 @@
+- openai-gpt-5.4-mini
+- openai-gpt-5.3-codex
 - gemini-3.0-pro-preview
 - z-ai-glm-5.1
 - claude-4.6-opus
@@ -8,7 +10,6 @@
 - claude-4.5-opus
 - claude-4.5-sonnet
 - claude-4.5-haiku
-- openai-gpt-5.4-mini
 - openai-gpt-5.4-nano
 - minimax-minimax-m2.7
 - claude-4.0-opus
@@ -19,7 +20,6 @@
 - gemini-3.0-pro-image-preview
 - gemini-3.1-flash-image-preview
 - gemini-3.1-pro-preview
-- openai-gpt-5.3-codex
 - meituan-longcat-flash-lite
 - qwen3-vl-30b-a3b-thinking
 - z-ai-glm-5
