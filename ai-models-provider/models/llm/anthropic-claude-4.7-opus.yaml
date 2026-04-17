@@ -1,14 +1,15 @@
-model: z-ai/glm-5
+model: anthropic/claude-4.7-opus
 label:
-  zh_Hans: Z-AI/GLM 5
-  en_US: Z-AI/GLM 5
+  zh_Hans: Claude 4.7 Opus
+  en_US: Claude 4.7 Opus
 model_type: llm
 features:
 - tool-call
 - stream-tool-call
+- vision
 model_properties:
   mode: chat
-  context_size: 200000
+  context_size: 1000000
 parameter_rules:
 - name: temperature
   use_template: temperature

@@ -1,7 +1,9 @@
-- openai-gpt-5.4-mini
-- openai-gpt-5.3-codex
+- anthropic-claude-4.7-opus
+- z-ai-glm-5
 - gemini-3.0-pro-preview
 - z-ai-glm-5.1
+- openai-gpt-5.4-mini
+- openai-gpt-5.3-codex
 - claude-4.6-opus
 - qwen-qwen3.5-plus
 - qwen-qwen3.6-plus
@@ -22,7 +24,6 @@
 - gemini-3.1-pro-preview
 - meituan-longcat-flash-lite
 - qwen3-vl-30b-a3b-thinking
-- z-ai-glm-5
 - minimax-minimax-m2.5
 - minimax-minimax-m2.5-highspeed
 - doubao-seed-2.0-code
