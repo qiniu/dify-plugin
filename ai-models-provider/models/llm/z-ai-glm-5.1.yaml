@@ -1,7 +1,7 @@
 model: z-ai/glm-5.1
 label:
-  zh_Hans: Z-Ai/GLM 5.1
-  en_US: Z-Ai/GLM 5.1
+  zh_Hans: Z-AI/GLM 5.1
+  en_US: Z-AI/GLM 5.1
 model_type: llm
 features:
 - tool-call
