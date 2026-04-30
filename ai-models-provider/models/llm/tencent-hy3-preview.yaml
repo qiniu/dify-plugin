@@ -1,15 +1,14 @@
-model: moonshotai/kimi-k2.6
+model: tencent/hy3-preview
 label:
-  zh_Hans: Moonshotai/Kimi-K2.6
-  en_US: Moonshotai/Kimi-K2.6
+  zh_Hans: Tencent/Hy3 Preview
+  en_US: Tencent/Hy3 Preview
 model_type: llm
 features:
 - tool-call
 - stream-tool-call
-- vision
 model_properties:
   mode: chat
-  context_size: 262000
+  context_size: 262144
 parameter_rules:
 - name: temperature
   use_template: temperature
