@@ -1,0 +1,19 @@
+model: x-ai/grok-4.2-fast-reasoning
+label:
+  zh_Hans: X-Ai/Grok 4.2 Fas Reasoning
+  en_US: X-Ai/Grok 4.2 Fas Reasoning
+model_type: llm
+features:
+- tool-call
+- stream-tool-call
+- vision
+model_properties:
+  mode: chat
+  context_size: 2000000
+parameter_rules:
+- name: temperature
+  use_template: temperature
+- name: top_p
+  use_template: top_p
+- name: max_tokens
+  use_template: max_tokens
