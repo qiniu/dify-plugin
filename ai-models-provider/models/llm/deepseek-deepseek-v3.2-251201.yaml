@@ -1,7 +1,7 @@
 model: deepseek/deepseek-v3.2-251201
 label:
-  zh_Hans: Deepseek/DeepSeek-V3.2
-  en_US: Deepseek/DeepSeek-V3.2
+  zh_Hans: DeepSeek/DeepSeek-V3.2
+  en_US: DeepSeek/DeepSeek-V3.2
 model_type: llm
 features:
 - tool-call

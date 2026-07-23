@@ -1,7 +1,7 @@
 model: openai/gpt-5.4-pro
 label:
-  zh_Hans: Openai/GPT-5.4 Pro
-  en_US: Openai/GPT-5.4 Pro
+  zh_Hans: OpenAI/GPT-5.4 Pro
+  en_US: OpenAI/GPT-5.4 Pro
 model_type: llm
 features:
 - tool-call

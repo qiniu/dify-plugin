@@ -1,7 +1,7 @@
 model: deepseek/deepseek-v4-pro-202606
 label:
-  zh_Hans: Deepseek/Deepseek-v4-Pro-202606
-  en_US: Deepseek/Deepseek-v4-Pro-202606
+  zh_Hans: DeepSeek/DeepSeek-v4-Pro-202606
+  en_US: DeepSeek/DeepSeek-v4-Pro-202606
 model_type: llm
 features:
 - tool-call
