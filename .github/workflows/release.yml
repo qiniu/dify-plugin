@@ -10,6 +10,9 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -59,6 +62,27 @@ jobs:
       run: |
         sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/download/v4.40.5/yq_linux_amd64
         sudo chmod +x /usr/local/bin/yq
+
+    - name: Synchronize manifest version
+      if: github.event_name == 'workflow_dispatch'
+      run: |
+        MANIFEST_FILE="${{ steps.parse_tag.outputs.plugin_name }}/manifest.yaml"
+        CURRENT_VERSION=$(yq eval '.version' "$MANIFEST_FILE")
+        RELEASE_VERSION="${{ steps.parse_tag.outputs.version }}"
+
+        if [ "$CURRENT_VERSION" = "$RELEASE_VERSION" ]; then
+          echo "Manifest version already matches release version: $RELEASE_VERSION"
+          exit 0
+        fi
+
+        echo "Updating manifest version from $CURRENT_VERSION to $RELEASE_VERSION"
+        yq eval ".version = \"$RELEASE_VERSION\"" -i "$MANIFEST_FILE"
+
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+        git add "$MANIFEST_FILE"
+        git commit -m "chore(${{ steps.parse_tag.outputs.plugin_name }}): release version $RELEASE_VERSION"
+        git push origin "HEAD:${{ github.ref_name }}"
         
     - name: Download Dify Plugin CLI
       run: |
@@ -115,6 +139,7 @@ jobs:
           echo "Release not found, creating: $TAG_NAME"
           gh release create "$TAG_NAME" \
             --repo "${{ github.repository }}" \
+            --target "$(git rev-parse HEAD)" \
             --title "${{ steps.parse_tag.outputs.plugin_name }} v${{ steps.parse_tag.outputs.version }}" \
             --notes "Auto-created by release workflow."
         fi
