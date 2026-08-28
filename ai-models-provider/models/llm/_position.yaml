@@ -5,7 +5,6 @@
 - claude-4.0-opus
 - deepseek-r1-0528
 - deepseek-r1
-- deepseek-v3-0324
 - doubao-1.5-pro-32k
 - doubao-1.5-thinking-pro
 - doubao-1.5-vision-pro
@@ -34,10 +33,6 @@
 - x-ai-grok-4-fast-reasoning
 - z-ai-glm-4.7
 - qwen3-30b-a3b-thinking-2507
-- deepseek-deepseek-v4-flash-vision-exp
-- z-ai-glm-5.3
-- deepseek-deepseek-v3.2-251201
-- moonshotai-kimi-k2.5
 - z-ai-glm-5.1
 - anthropic-claude-4.7-opus
 - moonshotai-kimi-k2.6
@@ -82,6 +77,11 @@
 - deepseek-deepseek-v4-pro-0813
 - x-ai-grok-4.6
 - google-gemini-3.7-flash
+- z-ai-glm-5.3
+- deepseek-deepseek-v4-flash-vision-exp
+- z-ai-glm-5.3-flash
+- deepseek-deepseek-v3.2-251201
+- moonshotai-kimi-k2.5
 - minimax-minimax-m2.5-highspeed
 - MiniMax-M1
 - deepseek-v3
