@@ -33,6 +33,8 @@
 - x-ai-grok-4-fast-reasoning
 - z-ai-glm-4.7
 - qwen3-30b-a3b-thinking-2507
+- tencent-hy4-preview
+- qwen-qwen3.8-flash-next
 - z-ai-glm-5.1
 - anthropic-claude-4.7-opus
 - moonshotai-kimi-k2.6
