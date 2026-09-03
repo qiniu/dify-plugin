@@ -33,13 +33,13 @@
 - x-ai-grok-4-fast-reasoning
 - z-ai-glm-4.7
 - qwen3-30b-a3b-thinking-2507
+- tencent-hy3-preview
 - z-ai-glm-5.1
 - anthropic-claude-4.7-opus
 - moonshotai-kimi-k2.6
 - deepseek-deepseek-v4-flash
 - deepseek-deepseek-v4-pro
 - openai-gpt-5.5
-- tencent-hy3-preview
 - x-ai-grok-4.2-fast-non-reasoning
 - x-ai-grok-4.2-fast-reasoning
 - google-gemini-3.1-flash-lite
@@ -82,6 +82,7 @@
 - qwen-qwen3.8-flash-next
 - z-ai-glm-5.3-flash
 - tencent-hy4-preview
+- anthropic-claude-fable-5.1
 - doubao-seed-2.0-code
 - doubao-seed-2.0-pro
 - doubao-seed-2.0-mini
