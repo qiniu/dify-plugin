@@ -35,7 +35,6 @@
 - z-ai-glm-4.7
 - qwen3-30b-a3b-thinking-2507
 - tencent-hy3-preview
-- z-ai-glm-5.3-flash
 - z-ai-glm-5.1
 - anthropic-claude-4.7-opus
 - moonshotai-kimi-k2.6
@@ -82,10 +81,12 @@
 - z-ai-glm-5.3
 - deepseek-deepseek-v4-flash-vision-exp
 - qwen-qwen3.8-flash-next
+- z-ai-glm-5.3-flash
 - tencent-hy4-preview
 - anthropic-claude-fable-5.1
 - google-gemini-3.8-flash
 - openai-gpt-6-astra
+- deepseek-deepseek-v4.1-flash
 - deepseek-deepseek-v3.2-251201
 - openai-gpt-5.3-codex
 - minimax-minimax-m2.5-highspeed
