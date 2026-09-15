@@ -87,6 +87,7 @@
 - google-gemini-3.8-flash
 - openai-gpt-6-astra
 - deepseek-deepseek-v4.1-flash
+- qwen-qwen3.7-flash
 - deepseek-deepseek-v3.2-251201
 - openai-gpt-5.3-codex
 - minimax-minimax-m2.5-highspeed
