@@ -88,6 +88,9 @@
 - openai-gpt-6-astra
 - deepseek-deepseek-v4.1-flash
 - qwen-qwen3.7-flash
+- gemini-2.5-flash
+- gemini-2.5-pro
+- gemini-2.5-flash-lite
 - openai-gpt-5.4-pro
 - openai-gpt-5.4-mini
 - doubao-seed-2.0-code
@@ -95,9 +98,7 @@
 - doubao-seed-2.0-mini
 - doubao-seed-2.0-lite
 - gemini-3.0-pro-image-preview
-- gemini-2.5-pro
 - gemini-3.1-flash-image-preview
-- gemini-2.5-flash
 - gemini-3.0-flash-preview
 - gemini-3.1-pro-preview
 - openai-gpt-5.2-codex
@@ -143,4 +144,3 @@
 - openai-gpt-5.4-nano
 - minimax-minimax-m2.7
 - minimax-minimax-m2.5
-- gemini-2.5-flash-lite
