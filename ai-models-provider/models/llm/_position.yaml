@@ -36,6 +36,7 @@
 - doubao-seed-1.6
 - qwen3-30b-a3b-thinking-2507
 - tencent-hy3-preview
+- deepseek-deepseek-v4-flash-202605
 - z-ai-glm-5.1
 - anthropic-claude-4.7-opus
 - moonshotai-kimi-k2.6
@@ -54,7 +55,6 @@
 - anthropic-claude-4.8-opus
 - minimax-minimax-m3
 - deepseek-deepseek-v4-pro-202606
-- deepseek-deepseek-v4-flash-202605
 - anthropic-claude-fable-5
 - google-gemini-3.1-flash-image
 - google-gemini-3-pro-image
