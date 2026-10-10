@@ -1,7 +1,7 @@
 model: anthropic/claude-haiku-5.5
 label:
-  zh_Hans: claude-haiku-5.5
-  en_US: claude-haiku-5.5
+  zh_Hans: Claude-Haiku-5.5
+  en_US: Claude-Haiku-5.5
 model_type: llm
 features:
 - tool-call
