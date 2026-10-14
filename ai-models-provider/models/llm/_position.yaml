@@ -41,6 +41,7 @@
 - doubao-seed-1.6
 - qwen3-30b-a3b-thinking-2507
 - tencent-hy3-preview
+- qwen-qwen3.6-27b
 - deepseek-deepseek-v4-flash-202605
 - nvidia-nemotron-3-ultra-550b-a55b0-free
 - z-ai-glm-5.1
@@ -56,7 +57,6 @@
 - x-ai-grok-4.2-non-reasoning
 - x-ai-grok-4.2-reasoning
 - google-gemini-3.5-flash
-- qwen-qwen3.6-27b
 - qwen-qwen3.7-max
 - anthropic-claude-4.8-opus
 - minimax-minimax-m3
