@@ -91,8 +91,14 @@ chore(ai-models-provider): release version 0.2.0
 
 **AI 模型插件** (`ai-models-provider/provider/qiniu_ai.py`)：
 - 继承 `ModelProvider`
-- 仅通过实际模型调用验证（不依赖 qiniu SDK）
-- 使用 `deepseek-v3` 作为验证模型
+- **凭证校验不依赖任何具体模型**：调用 `qiniu_credentials.validate_api_credentials()`，
+  用一个刻意不存在的模型名（`__qiniu_dify_credentials_probe__`）发一次探针请求
+- 依据是七牛云网关「**先鉴权、后路由**」：无效 key 会先返回 401，
+  与请求的模型是否存在无关
+- **校验是尽力而为的，绝不因外部因素阻断保存**：只有「key 为空」与
+  「网关明确返回鉴权失败」会拒绝；**断网、超时、路径可疑、5xx 一律放行**（仅记警告）
+- ⚠️ 历史上曾用 `deepseek-v3` 做校验模型；该模型于 2026-10-09 下架后
+  **所有用户都无法保存凭证**。禁止再引入具体模型名，`tests/` 中有回归测试守护
 
 **存储工具插件** (`storage-tools/provider/qiniu_tools.py`)：
 - 继承 `ToolProvider`
@@ -101,17 +107,37 @@ chore(ai-models-provider): release version 0.2.0
 
 ### GitHub Actions
 
-- **runnable.yml**：在 Python 3.11/3.12 上测试两个插件，启用 pip 缓存
+- **runnable.yml**：在 Python 3.11/3.12 上测试两个插件，启用 pip 缓存；
+  另有 `regression-tests` job 运行 `tests/`（不安装 `dify_plugin`，
+  以验证校验逻辑确实与插件运行时解耦）
 - **release.yml**：在 Git tag 推送时构建 `.difypkg` 文件（格式：`plugin-name-vX.Y.Z`）
 - 使用 `yq v4.40.5`（版本固定以确保安全）
 
+### 测试
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+- `tests/test_qiniu_credentials.py`：凭证探针与 endpoint 规范化
+- `tests/test_update_models.py`：模型下架处理、`_position.yaml` 排序、manifest 版本递增
+- 只依赖 `requests` + `pyyaml`，无需安装 `dify_plugin`
+
 ## 常见陷阱
 
-1. **不要修改 `meta.version`** - 始终保持为 `0.0.1`
+1. **不要修改 `meta.version`** - 始终保持为 `0.0.1`（注意 `bump_patch_version()`
+   只匹配顶格的 `version:`，不会误改它）
 2. **README 模型列表** - 保持通用描述，模型更新频繁
-3. **凭证验证** - 永远不要在错误时接受未验证的凭证
+3. **凭证校验不阻断保存（仅 ai-models-provider）** - 除「key 为空 / 网关明确返回
+   鉴权失败」外一律放行；不要把断网、超时、路径可疑当成校验失败（会再次卡住所有用户）。
+   ⚠️ 与 storage-tools 策略**故意不同**：storage-tools 必须在网络错误时失败
 4. **插件分离** - AI 模型 ≠ 存储工具（不同的依赖）
 5. **CI 中的文件路径** - 使用 matrix 变量：`${{ matrix.plugin.path }}`
+6. **禁止硬编码校验模型** - 模型会下架，校验逻辑必须与模型无关
+7. **`retirement_at` 判空** - 空字符串表示**在售**；`"" <= "2026-10-15"` 为 True，
+   直接做字符串比较会把所有在售模型误判为已下架
+8. **`_add_custom_parameters` 仍用 `normalize_endpoint_url()`** - 即使不校验凭证，
+   endpoint 规范化对运行时调用仍必要（容忍用户只填域名/多填斜杠）
 
 ## 关键文件参考
 

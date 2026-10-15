@@ -51,3 +51,29 @@ jobs:
         echo "🧪 Testing ${{ matrix.plugin.name }}..."
         timeout 10s python -m main || [ $? -eq 124 ]
         echo "✅ ${{ matrix.plugin.name }} runs successfully"
+
+  regression-tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12"]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install test dependencies
+      run: |
+        python -m pip install --upgrade pip
+        # 凭证探针模块只依赖 requests；模型同步脚本只依赖 requests + pyyaml。
+        # 这里刻意不安装 dify_plugin，以验证校验逻辑确实与插件运行时解耦。
+        pip install "requests>=2.25.0" "pyyaml>=6.0"
+
+    - name: Run regression tests
+      run: |
+        echo "🧪 校验逻辑与模型同步逻辑回归测试..."
+        python -m unittest discover -s tests -v
