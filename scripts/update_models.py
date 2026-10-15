@@ -65,6 +65,7 @@ import argparse
 import re
 import yaml
 import requests
+from datetime import date
 from pathlib import Path
 from typing import List, Dict, Any, Optional
 
@@ -100,11 +101,64 @@ PARAMETER_RULE_TEMPLATES = [
 
 ModelInfo = Dict[str, Any]
 
+#: 市场 API 中表示模型创建时间的字段（其余拼写历史上都不存在）
+CREATED_AT_FIELD = "created_time"
+
+#: 市场 API 中表示模型下架日期的字段，格式 ``YYYY-MM-DD``，空串表示在用
+RETIREMENT_FIELD = "retirement_at"
+
+#: 市场 API 中提供的替代模型建议（逗号分隔的模型 ID）
+SUGGESTED_MODEL_FIELD = "suggested_model"
+
 # CI 环境检测
 IS_CI = os.getenv("CI", "").lower() in ("true", "1", "yes")
 
 # 记录缺失字段的模型（用于 CI 环境）
 models_with_missing_fields = []
+
+
+def parse_date(value: Any) -> Optional[date]:
+    """把 API 返回的日期字符串解析为 ``date``，无法解析时返回 None。"""
+    if not value or not isinstance(value, str):
+        return None
+    text = value.strip()
+    if not text:
+        return None
+    # 兼容 "2026-07-08" 与 "2026-07-08T00:00:00+08:00" 两种形态
+    head = text[:10]
+    try:
+        return date(int(head[0:4]), int(head[5:7]), int(head[8:10]))
+    except (ValueError, IndexError):
+        return None
+
+
+def get_retirement_date(model_info: ModelInfo) -> Optional[date]:
+    """返回模型的下架日期，未下架（字段为空）时返回 None。"""
+    return parse_date(model_info.get(RETIREMENT_FIELD))
+
+
+def is_retired(model_info: ModelInfo, today: Optional[date] = None) -> bool:
+    """判断模型是否已下架（下架日期已到或已过）。
+
+    ``retirement_at`` 为空字符串表示**仍在服务中**，此时必须返回 False。
+    注意不要直接做字符串比较，``"" <= "2026-10-15"`` 为 True，会把所有
+    在售模型误判为已下架。
+    """
+    retirement = get_retirement_date(model_info)
+    if retirement is None:
+        return False
+    return retirement <= (today or date.today())
+
+
+def get_suggested_models(model_info: ModelInfo) -> List[str]:
+    """返回 API 建议的替代模型列表（可能为空）。"""
+    raw = model_info.get(SUGGESTED_MODEL_FIELD) or ""
+    return [item.strip() for item in str(raw).split(",") if item.strip()]
+
+
+def get_model_created_at(model_info: ModelInfo) -> str:
+    """返回模型创建时间（不存在时返回空串）。"""
+    return str(model_info.get(CREATED_AT_FIELD) or "")
 
 
 def has_vision_capability(input_modalities: List[str]) -> bool:
@@ -154,11 +208,23 @@ def output_release_meta(plugin_name: str = AI_MODELS_PLUGIN_NAME) -> None:
 
 
 def bump_patch_version() -> str:
-    """自动增加 manifest.yaml 的 patch 版本号（x.y.z -> x.y.(z+1)）。"""
+    """自动增加 manifest.yaml 的 patch 版本号（x.y.z -> x.y.(z+1)）。
+
+    注意：``version`` 行后面带有中文注释（``version: 0.2.11 # 插件实际版本号...``），
+    因此正则必须允许行尾注释存在——历史上这里要求行尾紧跟换行符，导致
+    解析永远失败、自动递增版本号一直报错。替换时会保留原有注释。
+
+    同样必须只匹配**顶格**的 ``version:``，否则会误改 ``meta`` 下的
+    ``version: '3.12'`` 或 ``version: 0.0.1``。
+    """
     with open(MANIFEST_FILE, "r", encoding="utf-8") as f:
         content = f.read()
 
-    matched = re.search(r"^version:\s*[\"']?([0-9]+\.[0-9]+\.[0-9]+)[\"']?\s*$", content, flags=re.MULTILINE)
+    pattern = (
+        r"^version:[ \t]*[\"']?([0-9]+\.[0-9]+\.[0-9]+)[\"']?"
+        r"[ \t]*(?P<comment>#[^\n]*)?$"
+    )
+    matched = re.search(pattern, content, flags=re.MULTILINE)
     if not matched:
         raise ValueError(f"无法从 {MANIFEST_FILE} 解析插件 version")
 
@@ -166,13 +232,20 @@ def bump_patch_version() -> str:
     major, minor, patch = current_version.split(".")
     new_version = f"{major}.{minor}.{int(patch) + 1}"
 
+    def _replace(match: "re.Match[str]") -> str:
+        comment = match.group("comment") or ""
+        return f"version: {new_version}" + (f" {comment}" if comment else "")
+
     updated_content = re.sub(
-        r"^version:\s*[\"']?" + re.escape(current_version) + r"[\"']?\s*$",
-        f"version: {new_version}",
+        pattern,
+        _replace,
         content,
         count=1,
         flags=re.MULTILINE,
     )
+
+    if updated_content == content:
+        raise ValueError(f"未能写入新的 version 到 {MANIFEST_FILE}")
 
     with open(MANIFEST_FILE, "w", encoding="utf-8") as f:
         f.write(updated_content)
@@ -277,6 +350,19 @@ def generate_model_yaml(model_info: ModelInfo) -> Dict[str, Any]:
         },
         "parameter_rules": [template.copy() for template in PARAMETER_RULE_TEMPLATES],
     }
+    
+    # 已下架的模型标记为 deprecated，让 Dify 在界面上提示用户
+    # 注意：仅在 True 时写入该字段，避免给在售模型制造无意义的 diff
+    retirement = get_retirement_date(model_info)
+    if is_retired(model_info):
+        config["deprecated"] = True
+        suggested = get_suggested_models(model_info)
+        hint = f"，建议迁移到：{', '.join(suggested)}" if suggested else ""
+        print(
+            f"    ⚠ {model_id} 已于 {retirement} 下架，标记为 deprecated{hint}"
+        )
+    elif retirement is not None:
+        print(f"    ⏳ {model_id} 计划于 {retirement} 下架")
     
     return config
 
@@ -434,27 +520,27 @@ def update_position_file(models: List[ModelInfo]):
     更新 _position.yaml 文件
     
     策略：
-    按照模型创建时间倒序排列（新模型在前）
-    如果 API 提供了 created_at 字段，使用该字段排序
-    否则使用 API 返回的原始顺序（假设已按时间排序）
+    在售模型在前、已下架模型在后；两组内部均按创建时间倒序（新模型在前）。
+    
+    创建时间取 API 的 ``created_time`` 字段（ISO 8601 字符串，可直接按字典序
+    比较）。历史上这里查找的是 ``created_at`` / ``created`` / ``creation_time``，
+    这三个字段 API 从未提供过，导致排序逻辑实际上从未生效——文件一直沿用
+    API 的原始顺序，而已下架的模型恰好排在前面。
     
     Args:
         models: 模型信息列表
     """
-    # 尝试按创建时间排序
-    # 检查是否有 created_at 或类似的时间字段
-    has_timestamp = any(m.get("created_at") or m.get("created") or m.get("creation_time") for m in models)
+    # 先按创建时间倒序（缺字段时用空串兜底，排在最后）
+    ordered = sorted(models, key=get_model_created_at, reverse=True)
     
-    if has_timestamp:
-        # 按时间戳倒序排序（新模型在前）
-        sorted_models = sorted(
-            models,
-            key=lambda m: m.get("created_at") or m.get("created") or m.get("creation_time") or 0,
-            reverse=True
-        )
-    else:
-        # 使用 API 返回的原始顺序（假设 API 已按时间排序，或保持原顺序）
-        sorted_models = models
+    # 再把已下架的模型整体挪到末尾（保持组内原有顺序）
+    active = [m for m in ordered if not is_retired(m)]
+    retired = [m for m in ordered if is_retired(m)]
+    sorted_models = active + retired
+    
+    if not sorted_models:
+        print("⚠ 模型列表为空，跳过 _position.yaml 更新")
+        return
     
     # 转换为文件名列表
     ordered_models = [sanitize_filename(m["id"]) for m in sorted_models]
@@ -463,10 +549,13 @@ def update_position_file(models: List[ModelInfo]):
     with open(POSITION_FILE, "w", encoding="utf-8") as f:
         yaml.dump(ordered_models, f, allow_unicode=True, default_flow_style=False)
     
-    print(f"✓ 已更新 _position.yaml，共 {len(ordered_models)} 个模型")
+    print(
+        f"✓ 已更新 _position.yaml，共 {len(ordered_models)} 个模型"
+        f"（在售 {len(active)}，已下架 {len(retired)}，已下架排在末尾）"
+    )
 
 
-def summarize_changes(added: List[str], updated: List[str], removed: List[str], total: int) -> None:
+def summarize_changes(added: List[str], updated: List[str], removed: List[str], total: int, models: Optional[List[ModelInfo]] = None) -> None:
     print()
     print("=" * 70)
     print("更新完成！")
@@ -474,6 +563,23 @@ def summarize_changes(added: List[str], updated: List[str], removed: List[str], 
     print(f"  更新模型: {len(updated)} 个")
     print(f"  删除模型: {len(removed)} 个")
     print(f"  总计模型: {total} 个")
+
+    if models is not None:
+        retired = [m for m in models if is_retired(m)]
+        upcoming = [
+            m
+            for m in models
+            if not is_retired(m) and get_retirement_date(m) is not None
+        ]
+        print(f"  已下架（已标记 deprecated）: {len(retired)} 个")
+        print(f"  计划下架（尚未标记）: {len(upcoming)} 个")
+        if upcoming:
+            print("  即将下架的模型（请留意后续版本）：")
+            for m in sorted(upcoming, key=lambda x: get_retirement_date(x)):
+                suggested = get_suggested_models(m)
+                hint = f" -> {', '.join(suggested)}" if suggested else ""
+                print(f"    - {m.get('id')} 于 {get_retirement_date(m)}{hint}")
+
     print("=" * 70)
 
     if added or updated or removed:
@@ -528,6 +634,14 @@ def main(argv: Optional[List[str]] = None):
         print("提示：请检查网络连接或 API 是否可用")
         sys.exit(1)
     
+    # 下架模型仍然保留在列表中（标记为 deprecated 并排到末尾），
+    # 这样既不影响已有用户的历史选择，也不会让它们出现在列表最前面。
+    retired_models = [m for m in models if is_retired(m)]
+    if retired_models and len(retired_models) == len(models):
+        print()
+        print("✗ 所有模型都被判定为已下架，疑似 API 数据异常，已中止更新")
+        sys.exit(1)
+    
     print()
     print("开始更新模型配置文件...")
     print("-" * 70)
@@ -540,7 +654,7 @@ def main(argv: Optional[List[str]] = None):
     
     # 更新 position 文件
     update_position_file(models)
-    summarize_changes(added, updated, removed, len(models))
+    summarize_changes(added, updated, removed, len(models), models)
     enforce_ci_requirements()
     exit_with_change_status(added, updated, removed)
 
