@@ -2,8 +2,9 @@ from collections.abc import Generator
 from typing import Optional, Union
 from dify_plugin.entities.model.llm import LLMMode, LLMResult
 from dify_plugin.entities.model.message import PromptMessage, PromptMessageTool
-from yarl import URL
 from dify_plugin import OAICompatLargeLanguageModel
+
+from qiniu_credentials import normalize_endpoint_url
 
 
 class QiniuLargeLanguageModel(OAICompatLargeLanguageModel):
@@ -69,7 +70,10 @@ class QiniuLargeLanguageModel(OAICompatLargeLanguageModel):
         Args:
             credentials: 认证信息字典
         """
-        credentials["endpoint_url"] = str(URL(credentials.get("endpoint_url", "https://openai.qiniu.com/v1")))
+        # 使用统一规范化逻辑，容忍用户只填域名、多填斜杠或粘贴完整接口地址
+        credentials["endpoint_url"] = normalize_endpoint_url(
+            credentials.get("endpoint_url")
+        )
         credentials["mode"] = LLMMode.CHAT.value
         credentials["function_calling_type"] = "tool_call"
         credentials["stream_function_calling"] = "support"
