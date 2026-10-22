@@ -153,9 +153,9 @@
 - qwen2.5-vl-72b-instruct
 - deepseek-r1
 - claude-4.0-opus
-- claude-4.0-sonnet
 - gemini-2.5-flash-lite
-- gemini-2.5-flash
 - gemini-2.5-pro
+- gemini-2.5-flash
+- claude-4.0-sonnet
 - qwen-max-2025-01-25
 - qwen3-32b
