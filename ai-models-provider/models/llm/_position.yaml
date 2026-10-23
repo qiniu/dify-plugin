@@ -32,7 +32,6 @@
 - google-gemini-3.6-flash
 - google-gemini-3.5-flash-lite
 - moonshotai-kimi-k3
-- stepfun-step-3.7-flash
 - x-ai-grok-4.5
 - openai-gpt-5.6-luna
 - openai-gpt-5.6-terra
@@ -72,7 +71,6 @@
 - openai-gpt-5.4
 - openai-gpt-5-mini
 - openai-gpt-5-pro
-- openai-gpt-5.2-chat
 - openai-gpt-5-nano
 - qwen3.5-397b-a17b
 - gemini-3.1-pro-preview
@@ -81,7 +79,6 @@
 - doubao-seed-2.0-mini
 - doubao-seed-2.0-pro
 - doubao-seed-2.0-code
-- minimax-minimax-m2.5-highspeed
 - minimax-minimax-m2.5
 - z-ai-glm-5
 - openai-gpt-5.3-codex
@@ -93,10 +90,11 @@
 - openai-gpt-5.2
 - claude-4.5-opus
 - x-ai-grok-4.1-fast
+- claude-4.5-sonnet
 - openai-gpt-5
 - x-ai-grok-code-fast-1
 - gpt-oss-120b
-- MiniMax-M1
+- stepfun-step-3.7-flash
 - deepseek-deepseek-v4-flash-202605
 - deepseek-deepseek-v4-pro-202606
 - qwen-qwen3.6-27b
@@ -105,7 +103,9 @@
 - arcee-ai-trinity-mini
 - gemini-3.1-flash-lite-preview
 - openai-gpt-5-chat
+- openai-gpt-5.2-chat
 - gemini-3.1-flash-image-preview
+- minimax-minimax-m2.5-highspeed
 - qwen3-vl-30b-a3b-thinking
 - meituan-longcat-flash-lite
 - qwen3-30b-a3b-thinking-2507
@@ -121,7 +121,6 @@
 - minimax-minimax-m2
 - claude-4.5-haiku
 - z-ai-glm-4.6
-- claude-4.5-sonnet
 - deepseek-deepseek-v3.2-exp-thinking
 - deepseek-deepseek-v3.2-exp
 - qwen3-max
@@ -157,5 +156,6 @@
 - gemini-2.5-pro
 - gemini-2.5-flash
 - claude-4.0-sonnet
+- MiniMax-M1
 - qwen-max-2025-01-25
 - qwen3-32b
