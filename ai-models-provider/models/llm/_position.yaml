@@ -21,7 +21,6 @@
 - tencent-hy4-preview
 - z-ai-glm-5.3-flash
 - qwen-qwen3.8-flash-next
-- deepseek-deepseek-v4-flash-vision-exp
 - z-ai-glm-5.3
 - google-gemini-3.7-flash
 - x-ai-grok-4.6
@@ -57,8 +56,6 @@
 - x-ai-grok-4.2-fast-reasoning
 - x-ai-grok-4.2-fast-non-reasoning
 - openai-gpt-5.5
-- deepseek-deepseek-v4-pro
-- deepseek-deepseek-v4-flash
 - moonshotai-kimi-k2.6
 - anthropic-claude-4.7-opus
 - z-ai-glm-5.1
@@ -94,11 +91,14 @@
 - openai-gpt-5
 - x-ai-grok-code-fast-1
 - gpt-oss-120b
+- deepseek-deepseek-v4-flash-vision-exp
 - stepfun-step-3.7-flash
 - deepseek-deepseek-v4-flash-202605
 - deepseek-deepseek-v4-pro-202606
 - qwen-qwen3.6-27b
 - tencent-hy3-preview
+- deepseek-deepseek-v4-pro
+- deepseek-deepseek-v4-flash
 - nvidia-nemotron-3-super-120b-a12b
 - arcee-ai-trinity-mini
 - gemini-3.1-flash-lite-preview
