@@ -1,3 +1,4 @@
+- anthropic-claude-fable-5.2
 - sensenova-sensenova-6.8-flash-lite
 - sensenova-sensenova-6.8-flash
 - tencent-hy4
@@ -149,8 +150,8 @@
 - doubao-1.5-vision-pro
 - glm-4.5
 - qwen2.5-vl-72b-instruct
-- claude-4.0-opus
 - claude-4.0-sonnet
+- claude-4.0-opus
 - qwen3-32b
 - qwen-max-2025-01-25
 - MiniMax-M1
